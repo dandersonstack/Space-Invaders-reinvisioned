@@ -15,14 +15,17 @@ public class Bunkers implements interfaces.Drawable {
 	private int oneFithWinX;
 	private int oneTwentythWinY;
 	public ArrayList<Bunker> bunkers;
+	private int[] winSize;
 
 	public Bunkers() {
+		winSize = SpaceInvadersMain.winSize;
 		bunkers = new ArrayList<Bunker>();
 		oneFithWinX = SpaceInvadersMain.winSize[0] / 5;
 		oneTwentythWinY = SpaceInvadersMain.winSize[1] / 20;
 	}
 	
 	public void addBunkersForLvl(int lvl) {
+		if(lvl == 10) oneFithWinX = (SpaceInvadersMain.winSize[0] + oneFithWinX) / 5;//adds spread to bunkers after lvl 9
 		bunkers = new ArrayList<Bunker>();
 		if(lvl % 4 == 0) {
 			bunkerBlockDims[0] = (lvl);//make the blocks bigger as time goes on, this has the effect of making the bunker weaker
@@ -82,7 +85,7 @@ public class Bunkers implements interfaces.Drawable {
 	@Override
 	public void updateDraw() {
 		for(int i = 0; i < bunkers.size(); i++) bunkers.get(i).updateDraw();
-		System.out.println("Updating Bunker Draw");
+		//System.out.println("Updating Bunker Draw");
 	}
 
 	@Override

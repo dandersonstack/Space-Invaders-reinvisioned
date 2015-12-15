@@ -26,7 +26,7 @@ public class SpaceInvadersMain {
 	public static Random rand;
 	public static InvaderModelLoader invaderModels;//hold the models for all the invaders to conserver memory
 	public static boolean running = true;
-	public static int lvl = 1;
+	public static int lvl = 10;
 	public static Score score;
 	public static Bunkers bunkers;
 
@@ -50,7 +50,7 @@ public class SpaceInvadersMain {
 		ents = new ArrayList<Living>();
 		window = new GameFrame("Space Invaders!");
 		window.mc.ents.add(new Player(10, 650));
-		createInvaders();
+		createInvaders(lvl);
 		bunkers.addBunkersForLvl(lvl);
 		
 		window.pack();
@@ -97,7 +97,8 @@ public class SpaceInvadersMain {
 						
 					} ticklimiter++;
 					playerMvr();//checks user input and acts accordingly
-					if(lvl > 9) for(int b = 0; b < bunkers.bunkers.size(); b++) bunkers.bunkers.get(b).updateDraw();
+					//System.out.println(lvl);
+					if(lvl > 9) bunkers.updateDraw();
 					projectiles.updateProjectilePos();//makes the invader projectiles head down, and the player ones head up.
 					invaderCollision();//see if the player projectiles hit any of the invaders
 					playerCollision();//see if any of the invader projectiles hit the player
@@ -133,16 +134,16 @@ public class SpaceInvadersMain {
 		lvl = 1;
 		window.mc.ents = new ArrayList<Living>();
 		window.mc.ents.add(new Player(10, 650));
-		createInvaders();
+		createInvaders(lvl);
 		bunkers.addBunkersForLvl(lvl);
 		projectiles = new Projectile();
 		running = true;
 	}
 	
-	private static void createInvaders() {//TODO fix model declaration to be correctly distributed
-		if(lvl > 9) lvl = 9;//limit the number of invaders that can spawn
-		int width = (int) (lvl * 1.5 + 3);//how many invaders wide
-		int height = (((int) (lvl / 3 + 1)) * 3);//how many invaders tall
+	private static void createInvaders(int level) {
+		if(level > 9) level = 9;//limit the number of invaders that can spawn
+		int width = (int) (level * 1.5 + 3);//how many invaders wide
+		int height = (((int) (level / 3 + 1)) * 3);//how many invaders tall
 		for(int i = 0; i < height; i++) {//loop through the rows
 			byte mId;//model/invader Id
 			if(i <= (int) (height / 3.0) - 1) mId = 0;// 3/3 == 1//if in the lower 3rd make type 0 (the ones that look a little like a skull)
@@ -223,7 +224,7 @@ public class SpaceInvadersMain {
 				}
 		}
 	}
-	//TODO figure out the bug with the basicBlockDestructible hit method (left most bunker is invincible, and the right 2 have entity specific rows)
+	
 	private static void bunkerCollision() {//every bunker is a little different, so this method is split into 2, this is the first part
 		if(bunkers.bunkers.size() <= 0) return;//if there are no bunkers, then stop looking at this function!
 		if(projectiles.InvaderProjectiles.size() > 0)//if there are no invader projectiles, then move on
@@ -258,7 +259,7 @@ public class SpaceInvadersMain {
 			lvl++;//increment the level
 			System.out.println("Current level: " + lvl);//log to the console
 			bunkers.addBunkersForLvl(lvl);//set up the bunker for this level
-			createInvaders();//set up the new invaders
+			createInvaders(lvl);//set up the new invaders
 		}
 	}
 	
