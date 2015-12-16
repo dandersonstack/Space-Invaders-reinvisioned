@@ -23,6 +23,7 @@ public class MainComponent extends JComponent {
 	public void paintComponent(Graphics g) {
 		super.paintComponent(g);
 		if(ents.size() > 0 && ents.get(0).isLiving()) {
+			g.drawString("Level: " + SpaceInvadersMain.lvl, 5, 13);
 			for(int i = 0; i < ents.size(); i++) ents.get(i).draw(g);
 			if(SpaceInvadersMain.bunkers.bunkers.size() > 0)
 				for(int i = 0; i < SpaceInvadersMain.bunkers.bunkers.size(); i++) SpaceInvadersMain.bunkers.bunkers.get(i).draw(g);

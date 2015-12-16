@@ -26,7 +26,7 @@ public class SpaceInvadersMain {
 	public static Random rand;
 	public static InvaderModelLoader invaderModels;//hold the models for all the invaders to conserver memory
 	public static boolean running = true;
-	public static int lvl = 10;
+	public static int lvl = 1;
 	public static Score score;
 	public static Bunkers bunkers;
 
@@ -257,6 +257,7 @@ public class SpaceInvadersMain {
 	private static void isTimeForNextLevel() {//updates everything for the next level
 		if(window.mc.ents.size() == 1) {//if only the player is alive, then proceed
 			lvl++;//increment the level
+			if(lvl % 25 == 0) projectiles.increaseProjectileSpeed(1);
 			System.out.println("Current level: " + lvl);//log to the console
 			bunkers.addBunkersForLvl(lvl);//set up the bunker for this level
 			createInvaders(lvl);//set up the new invaders
