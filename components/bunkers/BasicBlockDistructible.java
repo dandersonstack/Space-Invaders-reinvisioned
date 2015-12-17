@@ -73,10 +73,10 @@ public class BasicBlockDistructible implements interfaces.Bunker {
 	}
 
 	@Override//TODO findout why top, 4rd and 7th layers can only be hit by invaders, and the others only by the player
-	public boolean hit(int projIndex, boolean playerProj) {//second part of bunkerCollision method
+	public boolean hit(int projIndex, int projType) {//second part of bunkerCollision method
 		if(parts.size() <= 0) return false;//if the bunker is already gone, then nothing is going to hit this bunker
 		getBounds();
-		if(playerProj) {
+		if(projType == 0) {
 			if(SpaceInvadersMain.projectiles.PlayerProjectiles.get(projIndex)[0] < boundX + blockDims[0])//if projectile is left of right edge, continue
 				if(SpaceInvadersMain.projectiles.PlayerProjectiles.get(projIndex)[1] < boundY + blockDims[1])//if projectile is above the bottom, continue
 					for(int i = 0; i < parts.size(); i++)//start looking for what part the projectile will hit
@@ -88,7 +88,7 @@ public class BasicBlockDistructible implements interfaces.Bunker {
 								parts.remove(i);
 								return true;
 							}
-		} else {
+		} else if(projType == 1) {
 			if(SpaceInvadersMain.projectiles.InvaderProjectiles.get(projIndex)[0] < boundX + blockDims[0])
 				if(SpaceInvadersMain.projectiles.InvaderProjectiles.get(projIndex)[1] < boundY + blockDims[1])//same as above
 					for(int i = parts.size() - 1; i >= 0; i--)//starts from the top instead of the bottom to improve efficiency
@@ -97,6 +97,18 @@ public class BasicBlockDistructible implements interfaces.Bunker {
 							if(parts.get(i)[1] + y < SpaceInvadersMain.projectiles.InvaderProjectiles.get(projIndex)[1] &&// y bounds
 									SpaceInvadersMain.projectiles.InvaderProjectiles.get(projIndex)[1] < parts.get(i)[1] + blockDims[1] + y) {
 								SpaceInvadersMain.projectiles.InvaderProjectiles.remove(projIndex);
+								parts.remove(i);
+								return true;
+							}
+		} else {
+			if(SpaceInvadersMain.projectiles.SpecialProjectiles.get(projIndex)[0] < boundX + blockDims[0])
+				if(SpaceInvadersMain.projectiles.SpecialProjectiles.get(projIndex)[1] < boundY + blockDims[1])//same as above
+					for(int i = parts.size() - 1; i >= 0; i--)//starts from the top instead of the bottom to improve efficiency
+						if(parts.get(i)[0] + x < SpaceInvadersMain.projectiles.SpecialProjectiles.get(projIndex)[0] &&// x bounds
+								SpaceInvadersMain.projectiles.SpecialProjectiles.get(projIndex)[0] < parts.get(i)[0] + blockDims[0] + x)
+							if(parts.get(i)[1] + y < SpaceInvadersMain.projectiles.SpecialProjectiles.get(projIndex)[1] &&// y bounds
+									SpaceInvadersMain.projectiles.SpecialProjectiles.get(projIndex)[1] < parts.get(i)[1] + blockDims[1] + y) {
+								SpaceInvadersMain.projectiles.SpecialProjectiles.remove(projIndex);
 								parts.remove(i);
 								return true;
 							}

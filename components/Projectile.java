@@ -9,7 +9,7 @@ public class Projectile implements interfaces.Drawable {
 	public ArrayList<int[]> PlayerProjectiles = new ArrayList<int[]>();//[X, Y]
 	public int playerProjectileID = -1;//used to switch between standard projectiles and special ones. -1 == standard, others == special projectile type
 	public int ppStrength = 0;//playerProjectileStrength, I needed an external variable to hold this.
-	public int projTimerDefault = 90 * 90;//time in ticks (1 / 90 of a second == 1)
+	public int projTimerDefault = 90 * 45;//time in ticks (1 / 90 of a second == 1)
 	public int projectileTimer = -1;//-1 == done processing and back to default projectiles.
 	public final int NUMER_OF_SPECIALS = 3;//number that needs to be changed when new projectiles are added
 	public ArrayList<int[]> InvaderProjectiles = new ArrayList<int[]>();//[X, Y, Type]
@@ -18,25 +18,37 @@ public class Projectile implements interfaces.Drawable {
 	private int speed = 2;
 	
 	public void addSpecialProjectiles(int originX, int originY, int type, int strength) {
-		//types: 0 == scatter shot; 1 == armor piercing rounds; 2 == Spiral armor piercing rounds;
+		//types: 0 == scatter shot base; 3 == scatter shot; 1 == armor piercing rounds; 2 == Spiral armor piercing rounds;
 		int[] temp = new int[5];
 		temp[0] = originX;
 		temp[1] = originY;
 		temp[3] = type;
 		temp[4] = strength;
 		switch(type) {
+		case 3:
+			temp[3] = 0;
+			temp[2] = 0;
+			int[] base = temp;
+			SpecialProjectiles.add(temp);
+			base[2] = 1;
+			temp = new int[5];
+			for(int i = 0; i < 5; i++) temp[i] = base[i];
+			SpecialProjectiles.add(temp);
+			base[2] = 2;
+			temp = new int[5];
+			for(int i = 0; i < 5; i++) temp[i] = base[i];
+			SpecialProjectiles.add(temp);
+			base[2] = 3;
+			temp = new int[5];
+			for(int i = 0; i < 5; i++) temp[i] = base[i];
+			SpecialProjectiles.add(temp);
+			break;
 		case 0:
 			temp[2] = 0;
 			SpecialProjectiles.add(temp);
-			temp[2] += 1;
-			SpecialProjectiles.add(temp);
-			temp[2] += 1;
-			SpecialProjectiles.add(temp);
-			temp[2] += 1;
-			SpecialProjectiles.add(temp);
 			break;
-		case 1:
 		case 2:
+		case 1:
 			temp[2] = 0;
 			SpecialProjectiles.add(temp);
 			break;
@@ -48,7 +60,7 @@ public class Projectile implements interfaces.Drawable {
 	public void setSpecialProjectile(int type, int strength) {
 		playerProjectileID = type;
 		projectileTimer = projTimerDefault / strength;
-		if(projectileTimer < 90 * 20) projectileTimer = 90 * 20;
+		if(projectileTimer < 90 * 10) projectileTimer = 90 * 10;
 		ppStrength = strength;
 	}
 	
@@ -64,8 +76,9 @@ public class Projectile implements interfaces.Drawable {
 		switch(SpecialProjectiles.get(id)[3]) {
 		case 0:
 			if(SpecialProjectiles.get(id)[4] > 0) addSpecialProjectiles(SpecialProjectiles.get(id)[0], SpecialProjectiles.get(id)[1],
-					SpecialProjectiles.get(id)[3], SpecialProjectiles.get(id)[4] - 1);
-			SpecialProjectiles.remove(id);
+					3, SpecialProjectiles.get(id)[4] - 1);
+			if(SpecialProjectiles.get(id)[2] != 0 || SpecialProjectiles.get(id)[4] <= 0) SpecialProjectiles.remove(id);
+			else SpecialProjectiles.get(id)[4] -= 1;
 			break;
 		case 1:
 			if(SpecialProjectiles.get(id)[4] > 0) SpecialProjectiles.get(id)[4] -= 1;
@@ -132,13 +145,13 @@ public class Projectile implements interfaces.Drawable {
 				else if(SpecialProjectiles.get(i)[0] > SpaceInvadersMain.winSize[0] + 50) SpecialProjectiles.remove(i);
 				else switch(SpecialProjectiles.get(i)[2]) {
 				case 0:
-					SpecialProjectiles.get(i)[1] += speed;
+					SpecialProjectiles.get(i)[1] -= speed;
 					break;
 				case 1:
 					SpecialProjectiles.get(i)[0] += speed;
 					break;
 				case 2:
-					SpecialProjectiles.get(i)[1] -= speed;
+					SpecialProjectiles.get(i)[1] += speed;
 					break;
 				case 3:
 					SpecialProjectiles.get(i)[0] -= speed;
@@ -166,16 +179,18 @@ public class Projectile implements interfaces.Drawable {
 		for(int i = 0; i < InvaderProjectiles.size(); i++) g.fillRect(InvaderProjectiles.get(i)[0], InvaderProjectiles.get(i)[1] - 16, 2, 16);
 		for(int i = 0; i < SpecialProjectiles.size(); i++) switch(SpecialProjectiles.get(i)[3]) {
 		case 0:
-			g.drawRect(SpecialProjectiles.get(i)[0] + 2, SpecialProjectiles.get(i)[1], 2, 2);
-			g.drawRect(SpecialProjectiles.get(i)[0], SpecialProjectiles.get(i)[1] + 2, 2, 2);
-			g.drawRect(SpecialProjectiles.get(i)[0] + 4, SpecialProjectiles.get(i)[1] + 2, 2, 2);
-			g.drawRect(SpecialProjectiles.get(i)[0] + 2, SpecialProjectiles.get(i)[1] + 4, 2, 2);
+			g.fillRect(SpecialProjectiles.get(i)[0] + 2, SpecialProjectiles.get(i)[1], 2, 2);
+			g.fillRect(SpecialProjectiles.get(i)[0], SpecialProjectiles.get(i)[1] + 2, 2, 2);
+			g.fillRect(SpecialProjectiles.get(i)[0] + 4, SpecialProjectiles.get(i)[1] + 2, 2, 2);
+			g.fillRect(SpecialProjectiles.get(i)[0] + 2, SpecialProjectiles.get(i)[1] + 4, 2, 2);
 			break;
 		case 1:
-			g.drawRect(SpecialProjectiles.get(i)[0] + 1, SpecialProjectiles.get(i)[1], 2, 2);
+			g.fillRect(SpecialProjectiles.get(i)[0] + 1, SpecialProjectiles.get(i)[1], 2, 2);
+			g.fillRect(SpecialProjectiles.get(i)[0], SpecialProjectiles.get(i)[1] + 2, 4, 10);
 			break;
 		case 2:
-			
+			g.fillRect(SpecialProjectiles.get(i)[0] + 3, SpecialProjectiles.get(i)[1], 3, 9);
+			g.fillRect(SpecialProjectiles.get(i)[0], SpecialProjectiles.get(i)[1] + 3, 9, 3);
 			break;
 		default:
 			break;

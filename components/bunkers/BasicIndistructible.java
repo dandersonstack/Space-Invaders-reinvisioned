@@ -59,17 +59,23 @@ public class BasicIndistructible implements interfaces.Bunker {
 	}
 
 	@Override
-	public boolean hit(int projIndex, boolean playerProj) {//second part of the bunkerCollisoin method, is different for every type of bunker
-		if(playerProj) {//playerProj is a boolean that dictates if it is a player projectile, and thus how to treat it.
+	public boolean hit(int projIndex, int projType) {//second part of the bunkerCollisoin method, is different for every type of bunker
+		if(projType == 0) {//playerProj is a boolean that dictates if it is a player projectile, and thus how to treat it.
 			if(SpaceInvadersMain.projectiles.PlayerProjectiles.get(projIndex)[0] < x + width)//if it is to the left of the right edge, move on(already confirmed to be to the right of the left edge)
 				if(SpaceInvadersMain.projectiles.PlayerProjectiles.get(projIndex)[1] < y + height) {//if above the bottom (already confirmed to be bellow the top) then the projectile has hit the bunker
 					SpaceInvadersMain.projectiles.PlayerProjectiles.remove(projIndex);//because the bunker is invincible, the projectile is absorbed and removed
 					return true;
 				}
-		} else {
+		} else if(projType == 1) {
 			if(SpaceInvadersMain.projectiles.InvaderProjectiles.get(projIndex)[0] < x + width)//same as above, except with the invader projectile instead of the player
 				if(SpaceInvadersMain.projectiles.InvaderProjectiles.get(projIndex)[1] < y + height) {
-					SpaceInvadersMain.projectiles.InvaderProjectiles .remove(projIndex);
+					SpaceInvadersMain.projectiles.InvaderProjectiles.remove(projIndex);
+					return true;
+				}
+		} else {
+			if(SpaceInvadersMain.projectiles.SpecialProjectiles.get(projIndex)[0] < x + width)//same as above, except with the special projectile instead of the player
+				if(SpaceInvadersMain.projectiles.SpecialProjectiles.get(projIndex)[1] < y + height) {
+					SpaceInvadersMain.projectiles.SpecialProjectiles .remove(projIndex);
 					return true;
 				}
 		}

@@ -217,6 +217,25 @@ public class SpaceInvadersMain {
 				if(IndexFlag) break;//break the loop to stop the function to avoid a crash
 			}
 		}
+		if(projectiles.SpecialProjectiles.size() > 0) {
+			boolean indexFlag = false;
+			for(int i = 0; i < projectiles.SpecialProjectiles.size(); i++) {
+				if(projectiles.SpecialProjectiles.get(i)[1] < (lastMinY + 72)) for(int j = 1; j < window.mc.ents.size(); j++)
+					if(window.mc.ents.get(j).isLiving())
+						if((projectiles.SpecialProjectiles.get(i)[0] > (window.mc.ents.get(j).getX() + offsetOfInvaderModel(window.mc.ents.get(j).getIType()))) &&
+								(projectiles.SpecialProjectiles.get(i)[0] < ((window.mc.ents.get(j).getX() + invaderModels.modelDims[window.mc.ents.get(j).getIType() * 2][0]) + offsetOfInvaderModel(window.mc.ents.get(j).getIType()))))
+							if((projectiles.SpecialProjectiles.get(i)[1] < (window.mc.ents.get(j).getY() + invaderModels.modelDims[window.mc.ents.get(j).getIType()][1])) && (projectiles.SpecialProjectiles.get(i)[1] > window.mc.ents.get(j).getY())) {
+								window.mc.ents.get(j).kill();
+								window.mc.ents.remove(j);
+								projectiles.updateHitSpecialRound(i);
+								isTimeForNextLevel();
+								invaderCollision();
+								indexFlag = true;
+								break;
+							}
+				if(indexFlag) break;
+			}
+		}
 	}
 	
 	private static void playerCollision() {
@@ -227,9 +246,10 @@ public class SpaceInvadersMain {
 					projectiles.InvaderProjectiles.remove(i);//remove the projectile that killed the player, even though this is not neccessary
 				}
 		}
-		for(int i = 0; i < drops.drops.size(); i++) if(drops.drops.get(i)[1] > window.mc.ents.get(0).getY() && drops.drops.get(i)[0] > window.mc.ents.get(0).getX())
-				if(drops.drops.get(i)[0] + 10 < window.mc.ents.get(0).getX() + 45 && drops.drops.get(i)[1] + 16 < window.mc.ents.get(0).getY() + 30) {//TODO add what to do when this fills out.
-					
+		for(int i = 0; i < drops.drops.size(); i++) if(drops.drops.get(i)[1] + 16 > window.mc.ents.get(0).getY() && drops.drops.get(i)[0] + 5 > window.mc.ents.get(0).getX())
+				if(drops.drops.get(i)[0] + 5 < window.mc.ents.get(0).getX() + 45 && drops.drops.get(i)[1] + 16 < window.mc.ents.get(0).getY() + 30) {
+					drops.dropCollected(i);
+					break;
 				}
 	}
 	
@@ -240,15 +260,21 @@ public class SpaceInvadersMain {
 				for(int j = bunkers.bunkers.size() - 1; j >= 0; j--) {//start from the right and move on to the left
 					if(bunkers.bunkers.get(j).getY() < projectiles.InvaderProjectiles.get(i)[1])//if the projectile is below the upper left hand corner, check the X
 						if(projectiles.InvaderProjectiles.get(i)[0] > bunkers.bunkers.get(j).getX())//if the projectile is to the right of the upper left hand corner then move on to the next part of the method
-							if(bunkers.bunkers.get(j).hit(i, false)) break;//pass the projectile onto the bunker specific method //if the projectile hit the bunker then move on to the next one
+							if(bunkers.bunkers.get(j).hit(i, 1)) break;//pass the projectile onto the bunker specific method //if the projectile hit the bunker then move on to the next one
 				}
 		if(projectiles.PlayerProjectiles.size() > 0)//if there are no player projectiles, then move on
 			for(int i = 0; i < projectiles.PlayerProjectiles.size(); i++)
 				for(int j = bunkers.bunkers.size() - 1; j >= 0; j--) {
 					if(bunkers.bunkers.get(j).getY() < projectiles.PlayerProjectiles.get(i)[1])
 						if(projectiles.PlayerProjectiles.get(i)[0] > bunkers.bunkers.get(j).getX()) 
-							if(bunkers.bunkers.get(j).hit(i, true)) break;//the only differences from above are, 1) the projectile is coming from below, 2) it is from the player
+							if(bunkers.bunkers.get(j).hit(i, 0)) break;//the only differences from above are, 1) the projectile is coming from below, 2) it is from the player
 				}
+		if(projectiles.SpecialProjectiles.size() > 0)
+			for(int i = 0; i < projectiles.SpecialProjectiles.size(); i++)
+				for(int j = bunkers.bunkers.size() - 1; j > -1; j--)
+					if(bunkers.bunkers.get(j).getY() < projectiles.SpecialProjectiles.get(i)[1])
+						if(projectiles.SpecialProjectiles.get(i)[0] > bunkers.bunkers.get(j).getX())
+							if(bunkers.bunkers.get(j).hit(i, 2)) break;
 	}
 	
 	public static int offsetOfInvaderModel(int type) {//models are different in width, and therefore need to be offset

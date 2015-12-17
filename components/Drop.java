@@ -14,6 +14,7 @@ public class Drop implements interfaces.Drawable {
 	
 	
 	public void addDrop(int x, int y, int type, int strength) {
+		if(strength <= 0) strength = 1;
 		System.out.println("Adding Drop At: [" + x + ", " + y + "] Of Type: " + type + ", And Strength: " + strength);
 		int[] temp = new int[4];
 		temp[0] = x;
@@ -25,7 +26,7 @@ public class Drop implements interfaces.Drawable {
 	
 	public void generateDrop(int x, int y, Random rand) {
 		System.out.println("Generating Drop");
-		addDrop(x, y, rand.nextInt(SpaceInvadersMain.projectiles.NUMER_OF_SPECIALS), rand.nextInt(4));
+		addDrop(x, y, 0/*rand.nextInt(SpaceInvadersMain.projectiles.NUMER_OF_SPECIALS)*/, rand.nextInt(3) + 1);
 	}
 	
 	public void dropCollected(int id) {

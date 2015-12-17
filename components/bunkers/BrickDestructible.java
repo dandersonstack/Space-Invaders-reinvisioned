@@ -82,9 +82,9 @@ public class BrickDestructible implements interfaces.Bunker {
 	}
 
 	@Override
-	public boolean hit(int projIndex, boolean playerProj) {
+	public boolean hit(int projIndex, int projType) {
 		int[] bounds = getBounds();
-		if(playerProj) {
+		if(projType == 0) {
 			if(SpaceInvadersMain.projectiles.PlayerProjectiles.get(projIndex)[0] < bounds[0] &&
 					SpaceInvadersMain.projectiles.PlayerProjectiles.get(projIndex)[1] < bounds[1]) for(int i = 0; i < parts.size(); i++)
 						if(parts.get(i)[1] + y < SpaceInvadersMain.projectiles.PlayerProjectiles.get(projIndex)[1] &&
@@ -95,7 +95,7 @@ public class BrickDestructible implements interfaces.Bunker {
 								SpaceInvadersMain.projectiles.PlayerProjectiles.remove(projIndex);
 								return true;
 							}
-		} else {
+		} else if(projType == 1) {
 			if(SpaceInvadersMain.projectiles.InvaderProjectiles.get(projIndex)[0] < bounds[0] &&
 					SpaceInvadersMain.projectiles.InvaderProjectiles.get(projIndex)[1] < bounds[1]) for(int i = 0; i < parts.size(); i++)
 						if(parts.get(i)[1] + y < SpaceInvadersMain.projectiles.InvaderProjectiles.get(projIndex)[1] &&
@@ -104,6 +104,17 @@ public class BrickDestructible implements interfaces.Bunker {
 									SpaceInvadersMain.projectiles.InvaderProjectiles.get(projIndex)[0] < parts.get(i)[0] + x + (brickDims[0] * 2)) {
 								parts.remove(i);
 								SpaceInvadersMain.projectiles.InvaderProjectiles.remove(projIndex);
+								return true;
+							}
+		} else {
+			if(SpaceInvadersMain.projectiles.SpecialProjectiles.get(projIndex)[0] < bounds[0] &&
+					SpaceInvadersMain.projectiles.SpecialProjectiles.get(projIndex)[1] < bounds[1]) for(int i = 0; i < parts.size(); i++)
+						if(parts.get(i)[1] + y < SpaceInvadersMain.projectiles.SpecialProjectiles.get(projIndex)[1] &&
+								SpaceInvadersMain.projectiles.SpecialProjectiles.get(projIndex)[1] < parts.get(i)[1] + brickDims[1] + y)
+							if(parts.get(i)[0] + x < SpaceInvadersMain.projectiles.SpecialProjectiles.get(projIndex)[0] &&
+									SpaceInvadersMain.projectiles.SpecialProjectiles.get(projIndex)[0] < parts.get(i)[0] + x + (brickDims[0] * 2)) {
+								parts.remove(i);
+								SpaceInvadersMain.projectiles.SpecialProjectiles.remove(projIndex);
 								return true;
 							}
 		}
