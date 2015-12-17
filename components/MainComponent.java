@@ -27,6 +27,7 @@ public class MainComponent extends JComponent {
 			for(int i = 0; i < ents.size(); i++) ents.get(i).draw(g);
 			if(SpaceInvadersMain.bunkers.bunkers.size() > 0)
 				for(int i = 0; i < SpaceInvadersMain.bunkers.bunkers.size(); i++) SpaceInvadersMain.bunkers.bunkers.get(i).draw(g);
+			SpaceInvadersMain.drops.draw(g);
 			SpaceInvadersMain.projectiles.draw(g);
 		} else {
 			g.drawString("GAME OVER", SpaceInvadersMain.winSize[0] / 2 - 45, SpaceInvadersMain.winSize[1] / 2);

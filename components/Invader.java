@@ -85,6 +85,7 @@ public class Invader implements interfaces.Living {
 	public void kill() {
 		isAlive = false;
 		SpaceInvadersMain.score.addScore(type * 50 + 50);
+		/*if(SpaceInvadersMain.rand.nextInt(80) == 2) */SpaceInvadersMain.drops.generateDrop(x, y, SpaceInvadersMain.rand);
 	}
 
 	@Override

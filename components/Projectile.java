@@ -7,6 +7,11 @@ import main.SpaceInvadersMain;
 
 public class Projectile implements interfaces.Drawable {
 	public ArrayList<int[]> PlayerProjectiles = new ArrayList<int[]>();//[X, Y]
+	public int playerProjectileID = -1;//used to switch between standard projectiles and special ones. -1 == standard, others == special projectile type
+	public int ppStrength = 0;//playerProjectileStrength, I needed an external variable to hold this.
+	public int projTimerDefault = 90 * 90;//time in ticks (1 / 90 of a second == 1)
+	public int projectileTimer = -1;//-1 == done processing and back to default projectiles.
+	public final int NUMER_OF_SPECIALS = 3;//number that needs to be changed when new projectiles are added
 	public ArrayList<int[]> InvaderProjectiles = new ArrayList<int[]>();//[X, Y, Type]
 	public ArrayList<int[]> SpecialProjectiles = new ArrayList<int[]>();//[X, Y, Direction, Type, Strength]
 	//Directions: 0 == up; 1 == right; 2 == down; 3 == left
@@ -31,15 +36,27 @@ public class Projectile implements interfaces.Drawable {
 			SpecialProjectiles.add(temp);
 			break;
 		case 1:
-			temp[2] = 0;
-			SpecialProjectiles.add(temp);
-			break;
 		case 2:
 			temp[2] = 0;
 			SpecialProjectiles.add(temp);
 			break;
 		default:
 			break;
+		}
+	}
+	
+	public void setSpecialProjectile(int type, int strength) {
+		playerProjectileID = type;
+		projectileTimer = projTimerDefault / strength;
+		if(projectileTimer < 90 * 20) projectileTimer = 90 * 20;
+		ppStrength = strength;
+	}
+	
+	public void tickSpecialTimer() {
+		if(projectileTimer > 0) projectileTimer -= 1;
+		else if(projectileTimer == 0) {
+			projectileTimer = -1;
+			playerProjectileID = -1;
 		}
 	}
 	
@@ -62,6 +79,7 @@ public class Projectile implements interfaces.Drawable {
 			} else SpecialProjectiles.remove(id);
 			break;
 		default:
+			System.out.println("Default case called at projectiles.updateHitSpecialRound");
 			SpecialProjectiles.remove(id);
 			break;
 		}
@@ -69,12 +87,14 @@ public class Projectile implements interfaces.Drawable {
 	
 	public void addProjectileToPlayer(int x, int y) {
 		x += 20;
-		int[] temp = new int[2];
-		temp[0] = x;
-		temp[1] = y;
-		//System.out.println("ADDING PLAYER PROJECTILE AT: [" + x + ", " + y + "]");
-		//System.out.println("CURRENT TICK COUNT: " + SpaceInvadersMain.tickCounter);
-		PlayerProjectiles.add(temp);
+		if(playerProjectileID == -1) {
+			int[] temp = new int[2];
+			temp[0] = x;
+			temp[1] = y;
+			//System.out.println("ADDING PLAYER PROJECTILE AT: [" + x + ", " + y + "]");
+			//System.out.println("CURRENT TICK COUNT: " + SpaceInvadersMain.tickCounter);
+			PlayerProjectiles.add(temp);
+		} else addSpecialProjectiles(x, y, playerProjectileID, ppStrength);
 	}
 	
 	public void addProjectileToInvaders(int invaderId) {
@@ -152,7 +172,7 @@ public class Projectile implements interfaces.Drawable {
 			g.drawRect(SpecialProjectiles.get(i)[0] + 2, SpecialProjectiles.get(i)[1] + 4, 2, 2);
 			break;
 		case 1:
-			
+			g.drawRect(SpecialProjectiles.get(i)[0] + 1, SpecialProjectiles.get(i)[1], 2, 2);
 			break;
 		case 2:
 			
@@ -160,6 +180,11 @@ public class Projectile implements interfaces.Drawable {
 		default:
 			break;
 		}
+	}
+
+	public void tickProjectiles() {
+		updateProjectilePos();
+		tickSpecialTimer();
 	}
 	
 }

@@ -1,6 +1,7 @@
 package main;
 
 import components.Bunkers;
+import components.Drop;
 import components.Invader;
 import components.Player;
 import components.Projectile;
@@ -29,6 +30,7 @@ public class SpaceInvadersMain {
 	public static int lvl = 1;
 	public static Score score;
 	public static Bunkers bunkers;
+	public static Drop drops;
 
 	public static void main(String[] args) {
 		
@@ -42,6 +44,7 @@ public class SpaceInvadersMain {
 		}
 		
 		bunkers = new Bunkers();
+		drops = new Drop();
 		
 		rand = new Random();
 		
@@ -99,7 +102,8 @@ public class SpaceInvadersMain {
 					playerMvr();//checks user input and acts accordingly
 					//System.out.println(lvl);
 					if(lvl > 9) bunkers.updateDraw();
-					projectiles.updateProjectilePos();//makes the invader projectiles head down, and the player ones head up.
+					projectiles.tickProjectiles();//makes the invader projectiles head down, and the player ones head up.
+					drops.updateDropPos();//Makes the drops drop, instead of floating there mid air
 					invaderCollision();//see if the player projectiles hit any of the invaders
 					playerCollision();//see if any of the invader projectiles hit the player
 					bunkerCollision();//see if any projectiles hit the bunkers
@@ -223,6 +227,10 @@ public class SpaceInvadersMain {
 					projectiles.InvaderProjectiles.remove(i);//remove the projectile that killed the player, even though this is not neccessary
 				}
 		}
+		for(int i = 0; i < drops.drops.size(); i++) if(drops.drops.get(i)[1] > window.mc.ents.get(0).getY() && drops.drops.get(i)[0] > window.mc.ents.get(0).getX())
+				if(drops.drops.get(i)[0] + 10 < window.mc.ents.get(0).getX() + 45 && drops.drops.get(i)[1] + 16 < window.mc.ents.get(0).getY() + 30) {//TODO add what to do when this fills out.
+					
+				}
 	}
 	
 	private static void bunkerCollision() {//every bunker is a little different, so this method is split into 2, this is the first part
