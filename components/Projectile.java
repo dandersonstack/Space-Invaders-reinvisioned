@@ -17,44 +17,15 @@ public class Projectile implements interfaces.Drawable {
 	//Directions: 0 == up; 1 == right; 2 == down; 3 == left
 	private int speed = 2;
 	
-	public void addSpecialProjectiles(int originX, int originY, int type, int strength) {
-		//types: 0 == scatter shot base; 3 == scatter shot; 1 == armor piercing rounds; 2 == Spiral armor piercing rounds;
+	public void addSpecialProjectiles(int originX, int originY, int type, int strength, int direction) {
+		//types: 0 == scatter shot base; 1 == armor piercing rounds; 2 == Spiral armor piercing rounds;
 		int[] temp = new int[5];
 		temp[0] = originX;
 		temp[1] = originY;
+		temp[2] = direction;
 		temp[3] = type;
 		temp[4] = strength;
-		switch(type) {
-		case 3:
-			temp[3] = 0;
-			temp[2] = 0;
-			int[] base = temp;
-			SpecialProjectiles.add(temp);
-			base[2] = 1;
-			temp = new int[5];
-			for(int i = 0; i < 5; i++) temp[i] = base[i];
-			SpecialProjectiles.add(temp);
-			base[2] = 2;
-			temp = new int[5];
-			for(int i = 0; i < 5; i++) temp[i] = base[i];
-			SpecialProjectiles.add(temp);
-			base[2] = 3;
-			temp = new int[5];
-			for(int i = 0; i < 5; i++) temp[i] = base[i];
-			SpecialProjectiles.add(temp);
-			break;
-		case 0:
-			temp[2] = 0;
-			SpecialProjectiles.add(temp);
-			break;
-		case 2:
-		case 1:
-			temp[2] = 0;
-			SpecialProjectiles.add(temp);
-			break;
-		default:
-			break;
-		}
+		SpecialProjectiles.add(temp);
 	}
 	
 	public void setSpecialProjectile(int type, int strength) {
@@ -74,17 +45,26 @@ public class Projectile implements interfaces.Drawable {
 	
 	public void updateHitSpecialRound(int id) {
 		switch(SpecialProjectiles.get(id)[3]) {
-		case 0:
-			if(SpecialProjectiles.get(id)[4] > 0) addSpecialProjectiles(SpecialProjectiles.get(id)[0], SpecialProjectiles.get(id)[1],
-					3, SpecialProjectiles.get(id)[4] - 1);
-			if(SpecialProjectiles.get(id)[2] != 0 || SpecialProjectiles.get(id)[4] <= 0) SpecialProjectiles.remove(id);
+		case 0://ScatterShot
+			if(SpecialProjectiles.get(id)[4] > 0) {
+				addSpecialProjectiles(SpecialProjectiles.get(id)[0], SpecialProjectiles.get(id)[1],
+					0, SpecialProjectiles.get(id)[4] - 1, 0);
+				addSpecialProjectiles(SpecialProjectiles.get(id)[0], SpecialProjectiles.get(id)[1],
+						0, SpecialProjectiles.get(id)[4] - 1, 1);
+				addSpecialProjectiles(SpecialProjectiles.get(id)[0], SpecialProjectiles.get(id)[1],
+						0, SpecialProjectiles.get(id)[4] - 1, 2);
+				addSpecialProjectiles(SpecialProjectiles.get(id)[0], SpecialProjectiles.get(id)[1],
+						0, SpecialProjectiles.get(id)[4] - 1, 3);
+				SpecialProjectiles.remove(id);
+			}
+			if(SpecialProjectiles.get(id)[4] <= 0) SpecialProjectiles.remove(id);
 			else SpecialProjectiles.get(id)[4] -= 1;
 			break;
-		case 1:
+		case 1://armor piercing
 			if(SpecialProjectiles.get(id)[4] > 0) SpecialProjectiles.get(id)[4] -= 1;
 			else SpecialProjectiles.remove(id);
 			break;
-		case 2:
+		case 2://Spiraling armor piercing
 			if(SpecialProjectiles.get(id)[4] > 0) {
 				SpecialProjectiles.get(id)[4] -= 1;
 				if(SpecialProjectiles.get(id)[2] > 3) SpecialProjectiles.get(id)[2] = 0;
@@ -107,7 +87,7 @@ public class Projectile implements interfaces.Drawable {
 			//System.out.println("ADDING PLAYER PROJECTILE AT: [" + x + ", " + y + "]");
 			//System.out.println("CURRENT TICK COUNT: " + SpaceInvadersMain.tickCounter);
 			PlayerProjectiles.add(temp);
-		} else addSpecialProjectiles(x, y, playerProjectileID, ppStrength);
+		} else addSpecialProjectiles(x, y, playerProjectileID, ppStrength, 0);
 	}
 	
 	public void addProjectileToInvaders(int invaderId) {

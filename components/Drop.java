@@ -26,7 +26,7 @@ public class Drop implements interfaces.Drawable {
 	
 	public void generateDrop(int x, int y, Random rand) {
 		System.out.println("Generating Drop");
-		addDrop(x, y, 0/*rand.nextInt(SpaceInvadersMain.projectiles.NUMER_OF_SPECIALS)*/, rand.nextInt(3) + 1);
+		addDrop(x, y, rand.nextInt(SpaceInvadersMain.projectiles.NUMER_OF_SPECIALS), rand.nextInt(3) + 1);
 	}
 	
 	public void dropCollected(int id) {
