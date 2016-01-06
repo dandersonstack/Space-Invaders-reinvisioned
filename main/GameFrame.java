@@ -52,7 +52,7 @@ public class GameFrame extends JFrame implements KeyListener {
 			if(keyToggles[1]) {
 				keyToggles[1] = false;
 			}
-		} else if(e.VK_SPACE == kc) {
+		} else if(e.VK_SPACE == kc || e.VK_UP == kc) {
 			if(keyToggles[2]) {
 				keyToggles[2] = false;
 			}
@@ -84,7 +84,7 @@ public class GameFrame extends JFrame implements KeyListener {
 			if(!keyToggles[1]) {
 				keyToggles[1] = true;
 			}
-		} else if(e.VK_SPACE == kc) {
+		} else if(e.VK_SPACE == kc || e.VK_UP == kc) {
 			if(!keyToggles[2]) {
 				keyToggles[2] = true;
 			}
@@ -100,8 +100,8 @@ public class GameFrame extends JFrame implements KeyListener {
 			if(!keyToggles[5]) {
 				keyToggles[5] = true;
 			}
-		} else
-			System.out.println("KeyCode: " + e.getKeyCode());
+		} /*else
+			System.out.println("KeyCode: " + kc);*/
 	}
 
 }

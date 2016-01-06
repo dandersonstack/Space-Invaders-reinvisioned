@@ -58,17 +58,23 @@ public class Score {
 		}
 	}
 	
-	public void writeData() throws IOException {//TODO: Finish Method
+	public void writeData() throws IOException {
 		readData();
 		String name = JOptionPane.showInputDialog("Please enter your name (Please do not begin your name with a number, or include a '>'): ");
 		boolean clean = false;
 		while(!clean) {
-			while(Character.isDigit(name.charAt(0))) name = JOptionPane.showInputDialog("Invalid Name, Please enter a name that does not start with a number: ");
-			boolean cIllChar = false;//Contains Illegal Character
-			for(char c : name.toCharArray()) if(c == '>') cIllChar = true;
-			if(cIllChar) name = JOptionPane.showInputDialog("Please enter a name that does not contain a '>': ");
-			else if(Character.isDigit(name.charAt(0))) cIllChar = true;
-			else clean = true;
+			if(name != null && !name.isEmpty()) {
+				System.out.println("Checking Name: [" + name + "]");
+				while(Character.isDigit(name.charAt(0))) name = JOptionPane.showInputDialog("Invalid Name, Please enter a name that does not start with a number: ");
+				boolean cIllChar = false;//Contains Illegal Character
+				for(char c : name.toCharArray()) if(c == '>') cIllChar = true;
+				if(cIllChar) name = JOptionPane.showInputDialog("Please enter a name that does not contain a '>': ");
+				else if(Character.isDigit(name.charAt(0))) cIllChar = true;
+				else clean = true;
+			} else {
+				name = JOptionPane.showInputDialog("No Name provided, enter no input to discard score (Doing so will be perminent), else enter a name: ");
+				if(name == null || name.isEmpty()) break;
+			}
 		}
 		name += ">" + score + "\n";
 		BufferedWriter writer = new BufferedWriter(new FileWriter(f));
@@ -78,7 +84,7 @@ public class Score {
 			int i = 0;
 			while(i < preScores.size() && preScores.get(i) > score) i++;
 			for(int j = 0; j < i; j++) writer.write(data.get(j));
-			writer.write(name);
+			if(clean) writer.write(name);
 			for(; i < data.size(); i++) writer.write(data.get(i));
 		}
 		
