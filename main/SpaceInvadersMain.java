@@ -208,7 +208,7 @@ public class SpaceInvadersMain {
 									window.mc.ents.remove(j);//remove it from the list to release some of the load on the game
 									projectiles.PlayerProjectiles.remove(i);//the projectiles are not invincible and therefore need to stop and go away
 									isTimeForNextLevel();//if all the invaders are dead, then move on to the next level
-									invaderCollision();//refresh the function, if this is not called, then the game will crash
+									//invaderCollision();//refresh the function, if this is not called, then the game will crash
 									IndexFlag = true;//stops the current instance of the function
 									break;//stop the loop
 								}
